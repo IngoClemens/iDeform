@@ -1,0 +1,149 @@
+//
+// Procedure Name:
+//      findNextIndex
+//
+// Description:
+//      Return the next available array attribute index based on the
+//      given influence type.
+//
+// Input Arguments:
+//      string node     The name of the deformer node.
+//      string type     The type of dropoff influence.
+//
+// Return Value:
+//      int             The next available index for the influence.
+//
+proc int findNextIndex( string $node, string $type )
+{
+    if ($type == "locator" || $type == "chain")
+        return iDeformFindNextIndex($node, "influenceMatrix");
+    else
+        return iDeformFindNextIndex($node, "influenceCurve");
+}
+
+
+//
+// Procedure Name:
+//      iDisplaceConnectDropoff
+//
+// Description:
+//      Connect the selected locator or curve node as a dropoff
+//      influence to the iDisplace deformer.
+//
+// Input Arguments:
+//      string type     The type of dropoff object.
+//      int count       The number of dropoff locators.
+//
+// Return Value:
+//      string          The name of the iDisplace node.
+//
+global proc string iDisplaceConnectDropoff( string $type, int $count )
+{
+    string $deformNode;
+
+    string $sel[] = `ls -selection -transforms -long`;
+    if (size($sel) == 0)
+        return $deformNode;
+
+    $deformNode = iDeformHistoryHasDeformer($sel[size($sel) - 1], "iDisplace");
+
+    if ($deformNode == "")
+    {
+        warning "No iDisplace node found on selection.";
+        return $deformNode;
+    }
+
+    int $index = findNextIndex($deformNode, $type);
+    if ($type == "locator")
+    {
+        string $loc[] = `spaceLocator -name ($deformNode + "_dropoffLocator1")`;
+        connectAttr -force
+                    ($loc[0] + ".worldMatrix[0]")
+                    ($deformNode + ".influenceMatrix[" + $index + "]");
+        setAttr ($deformNode + ".influenceU[" + $index + "]") 0.5;
+        setAttr ($deformNode + ".dropoffType") 0;
+    }
+    else
+    {
+        string $shape[] = `listRelatives -shapes $sel[0]`;
+        if (size($shape) == 0)
+            return $deformNode;
+
+        if (`nodeType $shape[0]` != "nurbsCurve")
+            return $deformNode;
+
+        string $conn[] = `listConnections -source 0 -destination 1 ($shape[0] + ".worldSpace[0]")`;
+        for ($c in $conn)
+        {
+            if ($c == $deformNode)
+            {
+                warning ($shape[0] + " is already connected to " + $deformNode + ".");
+                return $deformNode;
+            }
+        }
+        if ($type == "curve")
+        {
+            connectAttr -force
+                        ($shape[0] + ".worldSpace[0]")
+                        ($deformNode + ".influenceCurve[" + $index + "]");
+            setAttr ($deformNode + ".dropoffType") 1;
+        }
+        else
+        {
+            string $locs[];
+            float $inc = 1.0 / ($count - 1);
+            float $uVal = 0;
+            string $group = `createNode transform -name ($deformNode + "_dropoffLocator_grp")`;
+            for ($i = 0; $i < $count; $i ++)
+            {
+                string $loc[] = `spaceLocator -name ($deformNode + "_dropoffLocator1")`;
+                $locs[size($locs)] = $loc[0];
+                setAttr ($loc[0] + ".visibility") 0;
+                string $motion = `pathAnimation -fractionMode 1 -follow 0 $sel[0] $loc[0]`;
+                delete (`listConnections -source 1 -destination 0 ($motion + ".uValue")`);
+                setAttr ($motion + ".uValue") $uVal;
+                connectAttr -force
+                            ($loc[0] + ".worldMatrix[0]")
+                            ($deformNode + ".influenceMatrix[" + $index + "]");
+                setAttr ($deformNode + ".influenceU[" + $index + "]") $uVal;
+                $index ++;
+                $uVal += $inc;
+            }
+            parent $locs $group;
+            select -r $deformNode;
+            setAttr ($deformNode + ".dropoffType") 0;
+        }
+    }
+    setAttr ($deformNode + ".useDropoff") 1;
+
+    return $deformNode;
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

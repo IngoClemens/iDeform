@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="iCollide" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#AE9CDB;stroke:#3F3F3F;stroke-width:16;stroke-miterlimit:10;}
+	.st1{fill:#BFBFBF;stroke:#3F3F3F;stroke-width:16;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M412.3,99.8c47.4,47.4,47.4,124.2,0,171.6s-124.2,47.4-171.6,0s-47.4-124.2,0-171.6S364.9,52.4,412.3,99.8z"/>
+<path class="st0" d="M232.1,280c87.6,87.5,259.2,57.8,171.6,145.4c-87.5,87.6-229.4,87.6-317,0.1s-87.6-229.4-0.1-317
+	S144.6,192.4,232.1,280z"/>
+<path class="st1" d="M452.6,21.3l-98.1,98.1l-33.7-33.7L258.1,254l168.3-62.6l-33.7-33.7l98.1-98.2L452.6,21.3z"/>
+</svg>

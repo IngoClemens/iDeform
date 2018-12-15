@@ -1,0 +1,167 @@
+//
+// Procedure Name:
+//      iDeformDeleteMenu
+//
+// Description:
+//      Remove the iDeform menu from the main menu bar.
+//
+// Input Arguments:
+//      None
+//
+// Return Value:
+//      None
+//
+global proc iDeformDeleteMenu()
+{
+    deleteUI iDeformMenu;
+}
+
+//
+// Procedure Name:
+//      iDeformCreateMenu
+//
+// Description:
+//      Create the iDeform menu in the main menu bar.
+//
+// Input Arguments:
+//      None
+//
+// Return Value:
+//      None
+//
+global proc iDeformCreateMenu()
+{
+    string $cmd = ("if (!`pluginInfo -query -loaded iDeform`) " +
+                   "loadPlugin iDeform;");
+
+    menu -label "iDeform"
+         -parent MayaWindow
+         -postMenuCommand $cmd
+         iDeformMenu;
+
+    menuItem -divider 1 -dividerLabel "Create";
+
+    menuItem -label "iCollide"
+             -annotation "Select mesh collider and mesh object"
+             -image "iCollide.svg"
+             -command "iCollide 1;";
+    menuItem -label "iDisplace"
+             -annotation "Select mesh object to displace"
+             -image "iDisplace.svg"
+             -command "iDisplace();";
+    menuItem -label "iSkinDeform Attract"
+             -annotation "Select control object and mesh object"
+             -image "iSkinDeform.svg"
+             -command "iSkinDeform 1 0;";
+    menuItem -label "iSkinDeform Slide"
+             -annotation "Select control object and mesh object"
+             -image "iSkinDeform.svg"
+             -command "iSkinDeform 1 1;";
+
+    menuItem -divider 1 -dividerLabel "Edit";
+
+    menuItem -label "iCollide" -allowOptionBoxes 1 -subMenu 1 -tearOff 1;
+    menuItem -label "Add Collider"
+             -annotation "Select new collider mesh and affected mesh"
+             -command "iCollide 0;";
+    menuItem -label "Remove Collider"
+             -annotation "Select collider mesh to remove"
+             -command "iCollideRemove();";
+    menuItem -label "Replace Collider"
+             -annotation "Select old collider mesh and new mesh object"
+             -command "iCollideReplace();";
+    menuItem -label "Connect Transform"
+             -annotation ("Select the deformed mesh object to connect the parent transform or " +
+                          "select the transform and the deformed mesh.")
+             -command "iCollideConnectParentMatrix();";
+
+    setParent -menu iDeformMenu;
+
+    menuItem -label "iDisplace" -allowOptionBoxes 1 -subMenu 1 -tearOff 1;
+    menuItem -label "Add Dropoff Locator"
+             -annotation "Select affected mesh to add a new dropoff locator"
+             -command "iDisplaceConnectDropoff locator 0;";
+    menuItem -label "Create Dropoff Locator Chain"
+             -annotation "Select curve object and deformed mesh to create a locator chain"
+             -command "performiDisplaceLocatorChain 0;";
+    menuItem -ob 1
+             -annotation "Select curve object and deformed mesh to create a locator chain"
+             -command "performiDisplaceLocatorChain 1;";
+    menuItem -label "Connect Dropoff Curve"
+             -annotation "Select dropoff curve object and deformed mesh"
+             -command "iDisplaceConnectDropoff curve 0;";
+    menuItem -label "Connect Vertex Color Mesh"
+             -annotation "Select vertex color mesh and deformed mesh"
+             -command "iDisplaceConnectColorMesh;";
+
+    setParent -menu iDeformMenu;
+
+    menuItem -label "iSkinDeform" -allowOptionBoxes 1 -subMenu 1 -tearOff 1;
+    menuItem -label "Add Influence"
+             -annotation "Select new influence object and affected mesh"
+             -command "iSkinDeform 0 0;";
+    menuItem -label "Remove Influence"
+             -annotation "Select influence to remove"
+             -command "iSkinDeformRemove();";
+    menuItem -label "Replace Influence"
+             -annotation "Select old influence and new influence object"
+             -command "iSkinDeformReplace();";
+    menuItem -label "Reset Rest Position"
+             -annotation "Select influences to return them to their rest positions"
+             -command "iSkinDeformResetRestPosition();";
+
+    setParent -menu iDeformMenu;
+
+    menuItem -divider 1 -dividerLabel "Paint";
+    menuItem -label "Paint iCollide Weights Tool"
+             -annotation "Change weights on selected iCollide"
+             -command "artAttrToolScript 4 \"iCollide\";";
+    menuItem -optionBox 1
+             -annotation "Change weights on selected iCollide"
+             -command "artAttrToolScript 3 \"iCollide\";";
+    menuItem -label "Paint iDisplace Weights Tool"
+             -annotation "Change weights on selected iDisplace"
+             -command "artAttrToolScript 4 \"iDisplace\";";
+    menuItem -optionBox 1
+             -annotation "Change weights on selected iDisplace"
+             -command "artAttrToolScript 3 \"iDisplace\";";
+    menuItem -label "Paint iSkinDeform Weights Tool"
+             -annotation "Change weights on selected iSkinDeform"
+             -command "artAttrToolScript 4 \"iSkinDeform\";";
+    menuItem -optionBox 1
+             -annotation "Change weights on selected iSkinDeform"
+             -command "artAttrToolScript 3 \"iSkinDeform\";";
+
+    menuSet -addMenu iDeformMenu modelingMenuSet;
+    menuSet -addMenu iDeformMenu riggingMenuSet;
+    menuSet -addMenu iDeformMenu animationMenuSet;
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

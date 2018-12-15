@@ -1,0 +1,113 @@
+//
+// Procedure Name:
+//      iDisplaceConnectColorMesh
+//
+// Description:
+//      Connect the first selected mesh with a color set to the
+//      iDisplace deformer of the second mesh to drive the displacement
+//      based on the vertex colors.
+//
+// Input Arguments:
+//      None
+//
+// Return Value:
+//      string          The name of the iDisplace node.
+//
+global proc string iDisplaceConnectColorMesh()
+{
+    string $deformNode;
+
+    string $sel[] = `ls -selection -long`;
+    if (size($sel) == 0)
+        return $deformNode;
+
+    $deformNode = iDeformHistoryHasDeformer($sel[size($sel) - 1], "iDisplace");
+
+    if ($deformNode == "")
+    {
+        warning ("No iDisplace node found on selection.");
+        return $deformNode;
+    }
+
+    string $mesh[];
+    if (`nodeType $sel[0]` == "transform")
+    {
+        string $shape[] = `listRelatives -shapes $sel[0]`;
+        if (!size($shape))
+        {
+            warning ("The first selected object has no shape node.");
+            return $deformNode;
+        }
+        else if (`nodeType $shape[0]` != "mesh")
+        {
+            warning ("The first selected object is not a mesh object.");
+            return $deformNode;
+        }
+        $mesh = $shape;
+    }
+    else
+    {
+        if (`nodeType $sel[0]` != "mesh")
+        {
+            warning ("The first selected object is not a mesh object.");
+            return $deformNode;
+        }
+        $mesh[0] = $sel[0];
+    }
+
+    if (`window -ex iDisplaceColorChooserWin`)
+        deleteUI iDisplaceColorChooserWin;
+
+    window -title "Choose Color Set" iDisplaceColorChooserWin;
+
+    columnLayout -adjustableColumn 1;
+    string $list = `textScrollList -allowMultiSelection 0`;
+    string $sets[] = `polyColorSet -query -allColorSets`;
+    for ($s in $sets)
+        textScrollList -edit -append $s $list;
+    textScrollList -edit
+                   -selectCommand ("polyColorSet -currentColorSet -colorSet " +
+                                   "(`textScrollList -query -selectItem " + $list + "`)")
+                   $list;
+    button -label "Connect"
+           -command ("setAttr -type \"string\" " + $deformNode +
+                     ".colorSetName (`textScrollList -query -selectItem " + $list + "`); " +
+                     "deleteUI iDisplaceColorChooserWin;");
+
+    showWindow iDisplaceColorChooserWin;
+
+    connectAttr -force ($mesh[0] + ".worldMesh[0]") ($deformNode + ".influenceMesh");
+    setAttr ($deformNode + ".useDropoff") 1;
+    setAttr ($deformNode + ".dropoffType") 2;
+
+    return $deformNode;
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

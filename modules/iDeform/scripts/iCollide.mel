@@ -1,0 +1,146 @@
+//
+// Procedure Name:
+//      checkShells
+//
+// Description:
+//      Check the number of shells for the given mesh. Only meshes
+//      ocnsisting of a single shell are supported as a collider.
+//
+// Input Arguments:
+//      string mesh     The name of the collider mesh.
+//
+// Return Value:
+//      int             True, if the mesh has only a single shell.
+//
+proc int checkShells( string $mesh )
+{
+    int $shellFaces[] = `polySelect -extendToShell 0 -noSelection $mesh`;
+    int $faceCount[] = `polyEvaluate -face $mesh`;
+    if (size($shellFaces) != $faceCount[0])
+    {
+        string $message = ("The collider mesh has multiple shells\n" +
+                           "which can lead to unexpected results.\n\n" +
+                           "Do you want to continue?");
+        string $confirm = `confirmDialog -title "iCollide"
+                                         -message $message
+                                         -button "Continue"
+                                         -button "Cancel"
+                                         -defaultButton "Cancel"
+                                         -cancelButton "Cancel"
+                                         -dismissString "Cancel"`;
+        if ($confirm == "Cancel")
+            return 0;
+        return 1;
+    }
+    return 1;
+}
+
+
+//
+// Procedure Name:
+//      iCollide
+//
+// Description:
+//      Create a new iCollide deformer for the selected mesh and connect
+//      the collider mesh if any are selected.
+//
+// Input Arguments:
+//      int new         True, if a new deformer should be created.
+//
+// Return Value:
+//      string          The name of the iCollide node.
+//
+global proc string iCollide( int $new )
+{
+    string $deformNode[];
+    int $index = 0;
+
+    string $shapes[] = iCollideCheckForMesh();
+    if (size($shapes) == 1 || size($shapes) == 2)
+    {
+        if ($new)
+        {
+            $deformNode = `deformer -type "iCollide" $shapes[size($shapes) - 1]`;
+
+            // connect the parent transform
+            /*
+            string $sel[] = `ls -selection -transforms -long`;
+            select -r $sel[size($sel) - 1];
+            iCollideConnectParentMatrix;
+            select -r $sel;
+            */
+        }
+        else if (size($shapes) == 2)
+        {
+            if (!checkShells($shapes[0]))
+                return $deformNode[0];
+
+            $deformNode[0] = iDeformHistoryHasDeformer($shapes[1], "iCollide");
+
+            if ($deformNode[0] == "")
+            {
+                warning ("No iCollide node found to add mesh to.");
+                return $deformNode[0];
+            }
+            string $conn[] = `listConnections -source 0
+                                              -destination 1
+                                              ($shapes[0] + ".worldMesh[0]")`;
+            for ($c in $conn)
+            {
+                if ($c == $deformNode[0])
+                {
+                   warning ($shapes[0] + " is already connected to " + $deformNode[0] + ".");
+                   return $deformNode[0];
+                }
+            }
+            $index = iDeformFindNextIndex($deformNode[0], "collider");
+        }
+        else
+        {
+            warning "Select two mesh objects to collide.";
+            return $deformNode[0];
+        }
+
+        if (size($shapes) == 2)
+        {
+            connectAttr -force
+                        ($shapes[0] + ".worldMesh[0]")
+                        ($deformNode[0] + ".collider[" + $index + "]");
+        }
+    }
+    else
+    {
+        warning "Select one or two mesh objects.";
+        return $deformNode[0];
+    }
+    return $deformNode[0];
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

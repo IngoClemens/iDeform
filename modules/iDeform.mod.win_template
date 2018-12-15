@@ -1,0 +1,8 @@
++ MAYAVERSION:2016.5 iDeform any C:\Users\USERNAME\Documents\maya\modules\iDeform
+plug-ins: plug-ins/win64/2016.5
+
++ MAYAVERSION:2017 iDeform any C:\Users\USERNAME\Documents\maya\modules\iDeform
+plug-ins: plug-ins/win64/2017
+
++ MAYAVERSION:2018 iDeform any C:\Users\USERNAME\Documents\maya\modules\iDeform
+plug-ins: plug-ins/win64/2018

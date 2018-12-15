@@ -1,0 +1,72 @@
+// ---------------------------------------------------------------------
+// AEiSkinDeformTemplate.mel
+//
+// Attribute Editor template for the iSkinDeform deformer node.
+//
+// ---------------------------------------------------------------------
+
+global proc AEiSkinDeformTemplate( string $nodeName )
+{
+    // the following controls will be in a scrollable layout
+    editorTemplate -beginScrollLayout;
+
+        editorTemplate -beginLayout "Deformer Attributes" -collapse 0;
+            editorTemplate -addControl "envelope";
+        editorTemplate -endLayout;
+
+        // add the deformer attributes
+        editorTemplate -beginLayout "iSkinDeform General Attributes" -collapse 0;
+            editorTemplate -addControl "strength";
+            editorTemplate -addControl "radius";
+            AEaddRampControl( $nodeName + ".falloff" );
+        editorTemplate -endLayout;
+
+        editorTemplate -beginLayout "Attractor Attributes" -collapse 0;
+            editorTemplate -addControl "attractor";
+            editorTemplate -addControl "pinch";
+            editorTemplate -addControl "negativeClamp";
+            AEaddRampControl( $nodeName + ".curveFalloff" );
+        editorTemplate -endLayout;
+
+        editorTemplate -beginLayout "Sliding Attributes" -collapse 0;
+            editorTemplate -addControl "sliding";
+            editorTemplate -addControl "method";
+        editorTemplate -endLayout;
+
+        // include/call base class/node attributes
+        AEdependNodeTemplate $nodeName;
+
+        // add any extra attributes that have been added
+        editorTemplate -addExtraControls;
+
+    editorTemplate -endScrollLayout;
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

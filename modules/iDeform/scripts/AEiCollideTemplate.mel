@@ -1,0 +1,130 @@
+// ---------------------------------------------------------------------
+// AEiCollideTemplate.mel
+//
+// Attribute Editor template for the iCollide deformer node.
+//
+// ---------------------------------------------------------------------
+
+global proc iCollideUseColorsCheckBox( string $attrName )
+{
+    setUITemplate -pushTemplate attributeEditorTemplate;
+
+    rowLayout -numberOfColumns 3;
+        text -label "";
+        checkBox -label "Use Colors" useColorsCheck;
+        text -label "";
+    setParent ..;
+
+    setUITemplate -popTemplate;
+
+    iCollideUseColorsCheckBoxRepeat $attrName;
+}
+
+
+global proc iCollideUseColorsCheckBoxRepeat( string $attrName )
+{
+    connectControl -fileName useColorsCheck $attrName;
+    string $cmd = "iCollideDisplayCollisionColors " + $attrName;
+    checkBox -edit -changeCommand $cmd useColorsCheck;
+}
+
+
+global proc AEiCollideTemplate( string $nodeName )
+{
+    string $ann;
+
+    // the following controls will be in a scrollable layout
+    editorTemplate -beginScrollLayout;
+
+        editorTemplate -beginLayout "Deformer Attributes" -collapse 0;
+            editorTemplate -addControl "envelope";
+        editorTemplate -endLayout;
+
+        // add the deformer attributes
+        editorTemplate -beginLayout "iCollide Attributes" -collapse 0;
+            editorTemplate -addSeparator;
+            editorTemplate -addControl "bulge";
+            editorTemplate -addControl "radius";
+            editorTemplate -addControl "offset";
+
+            editorTemplate -addSeparator;
+            editorTemplate -addControl "useGround";
+            editorTemplate -addControl "groundHeight";
+
+            editorTemplate -addSeparator;
+            editorTemplate -addControl "mode";
+            editorTemplate -addControl "useStartFrame";
+            editorTemplate -addControl "startFrame";
+            editorTemplate -addControl "decay";
+
+            editorTemplate -addSeparator;
+            $ann = ("The distance in world units objects in front of the surface are considered " +
+                    "for collision.");
+            editorTemplate -ann $ann -addControl "maxRange";
+            $ann = ("The distance in world units for the maximum allowed intersection. " +
+                    "Keep small if the mesh is in enclosed spaces.");
+            editorTemplate -ann $ann -addControl "intersectionRange";
+
+            AEaddRampControl( $nodeName + ".bulgeShape" );
+        editorTemplate -endLayout;
+
+        editorTemplate -beginLayout "Color" -collapse 1;
+            editorTemplate -callCustom "iCollideUseColorsCheckBox"
+                                       "iCollideUseColorsCheckBoxRepeat"
+                                       "useColors";
+            editorTemplate -addControl "result";
+            editorTemplate -addControl "colorMode";
+            $ann = "Defines the upper boundary when mapping the displacement to the color gradient.";
+            editorTemplate -ann $ann -addControl "maxDisplacement";
+            editorTemplate -ann "Multiplier for the max displacement reference value."
+                           -addControl "scaleFactor";
+
+            editorTemplate -addSeparator;
+            editorTemplate -addControl "defaultColor";
+            editorTemplate -addControl "colorGain";
+
+            editorTemplate -addSeparator;
+            editorTemplate -ann "Smoothes neighbouring colors. Ignored in trace mode."
+                           -addControl "smooth";
+
+            AEaddRampControl( $nodeName + ".colorGradient" );
+            AEaddRampControl( $nodeName + ".colorStrength" );
+        editorTemplate -endLayout;
+
+        // include/call base class/node attributes
+        AEdependNodeTemplate $nodeName;
+
+        // add any extra attributes that have been added
+        editorTemplate -addExtraControls;
+
+    editorTemplate -endScrollLayout;
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

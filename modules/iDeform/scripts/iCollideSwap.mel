@@ -1,0 +1,83 @@
+//
+// Procedure Name:
+//      iCollideSwap
+//
+// Description:
+//      Swap the order of the selected collider meshes.
+//
+// Input Arguments:
+//      None
+//
+// Return Value:
+//      string          The name of the iCollide node.
+//
+global proc string iCollideSwap()
+{
+    string $collideNode[];
+    int $index[];
+
+    string $shapes[] = iCollideCheckForMesh();
+    if (size($shapes) == 2)
+    {
+        for ($s in $shapes)
+        {
+            string $conn[] = `listConnections -source 0
+                                              -destination 1
+                                              -plugs 1
+                                              ($s + ".worldMesh[0]")`;
+
+            string $connElements[];
+            tokenize $conn[0] "." $connElements;
+            $collideNode[size($collideNode)] = $connElements[0];
+            $index[size($index)] = `match "[0-9]+" $connElements[1]`;
+        }
+        if (size($collideNode) == 2 && size($index) == 2)
+        {
+            disconnectAttr ($shapes[0] + ".worldMesh[0]")
+                           ($collideNode[0] + ".collider[" + $index[0] + "]");
+            connectAttr -force
+                        ($shapes[1] + ".worldMesh[0]")
+                        ($collideNode[0] + ".collider[" + $index[0] + "]");
+            disconnectAttr ($shapes[1] + ".worldMesh[0]")
+                           ($collideNode[1] + ".collider[" + $index[1] + "]");
+            connectAttr -force
+                        ($shapes[0] + ".worldMesh[0]")
+                        ($collideNode[1] + ".collider[" + $index[1] + "]");
+        }
+        else
+            warning "Both meshes must be active colliders.";
+    }
+    else
+        warning "Select the old and the new mesh collider.";
+
+    return $collideNode[0];
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------

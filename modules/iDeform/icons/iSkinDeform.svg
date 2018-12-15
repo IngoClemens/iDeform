@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="iSkinDeform" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#AE9CDB;stroke:#3F3F3F;stroke-width:16;stroke-miterlimit:10;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#BFBFBF;stroke:#3F3F3F;stroke-width:16;stroke-miterlimit:10;}
+</style>
+<path class="st0" d="M451.3,21.5c21.6,0,39.2,17.5,39.2,39.2S473,99.8,451.3,99.8c-21.6,0-39.2-17.5-39.2-39.2
+	S429.7,21.5,451.3,21.5z"/>
+<path class="st0" d="M196.8,139c113.8-2.3,179.2-40,197.5-18.7c15.7,18.4-19.6,102-21.2,194.9c-1.6,97.3-78.9,176.2-176.2,176.2
+	S20.5,412.6,20.5,315.2S99.4,140.9,196.8,139z"/>
+<path class="st1" d="M167.1,382.9l99-99l34,34l63.2-169.7l-169.7,63.2l34,34l-99,99L167.1,382.9z"/>
+</svg>

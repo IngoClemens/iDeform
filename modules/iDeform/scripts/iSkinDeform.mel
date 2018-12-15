@@ -1,0 +1,140 @@
+//
+// Procedure Name:
+//      checkSelection
+//
+// Description:
+//      Check that there are currently two objects selected and that the
+//      first object is a mesh object.
+//
+// Input Arguments:
+//      None
+//
+// Return Value:
+//      string[]        The list with the current selection.
+//
+global proc string[] checkSelection()
+{
+    string $nodes[];
+    string $sel[] = `ls -selection -transforms -long`;
+    string $target;
+    if (size($sel) != 2)
+        return $nodes;
+
+    $target = $sel[1];
+    string $shape[] = `listRelatives -shapes $target`;
+    if (`nodeType $shape[0]` != "mesh")
+    {
+        warning "iSkinDeform only works with polygonal objects.";
+        return {};
+    }
+    else
+    {
+        $nodes[0] = $sel[0];
+        $nodes[1] = $target;
+    }
+    return $nodes;
+}
+
+
+//
+// Procedure Name:
+//      iSkinDeform
+//
+// Description:
+//      Create a new iSkinDeform deformer for the selected mesh and
+//      connect the first selected object as an influence.
+//
+// Input Arguments:
+//      int new         True, if a new deformer should be created.
+//      int type        The iSkinDeform type:
+//                          0: Attract
+//                          1: Slide
+//
+// Return Value:
+//      string          The name of the iSkinDeform node.
+//
+global proc string iSkinDeform( int $new, int $type )
+{
+    string $deformNode[];
+
+    int $inflID = 0;
+    string $nodes[] = checkSelection();
+    if (size($nodes) != 2)
+    {
+        warning "Select an influence object and a mesh to deform.";
+        return "";
+    }
+
+    if ($new)
+    {
+        $deformNode = `deformer -type "iSkinDeform" $nodes[1]`;
+        if ($type)
+            setAttr ($deformNode[0] + ".sliding") 1;
+    }
+    else
+    {
+        $deformNode[0] = iDeformHistoryHasDeformer($nodes[1], "iSkinDeform");
+
+        if ($deformNode[0] == "")
+        {
+            warning "No iSkinDeform node found to add influence to.";
+            return $deformNode[0];
+        }
+        string $conn[] = `listConnections -source 0
+                                          -destination 1
+                                          ($nodes[0] + ".worldMatrix")`;
+        for ($c in $conn)
+        {
+            if ($c == $deformNode[0])
+            {
+                warning ($nodes[0] + " is already connected to " + $deformNode[0] + ".");
+                return $deformNode[0];
+            }
+        }
+    }
+
+    $index = iDeformFindNextIndex($deformNode[0], "influenceMatrix");
+    connectAttr -force
+                ($nodes[0] + ".worldMatrix")
+                ($deformNode[0] + ".influenceMatrix[" + $index + "]");
+    float $pos[] = `getAttr ($nodes[0] + ".translate")`;
+    setAttr ($deformNode[0] + ".restPositionList[" + $index + "]") $pos[0] $pos[1] $pos[2];
+    string $shape[] = `listRelatives -children $nodes[0]`;
+    if (`nodeType $shape[0]` == "nurbsCurve")
+    {
+        connectAttr -force
+                    ($shape[0] + ".worldSpace[0]")
+                    ($deformNode[0] + ".attractorCurve[" + $index + "]");
+    }
+
+    return $deformNode[0];
+}
+
+// ---------------------------------------------------------------------
+// MIT License
+//
+// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
+// MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// Author: Ingo Clemens    www.braverabbit.com
+// ---------------------------------------------------------------------
