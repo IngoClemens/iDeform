@@ -28,6 +28,40 @@ iSkinDeform is deformer-based version of the slide components tool available wit
 
 Tutorial on Vimeo: [iSkinDeform](https://vimeo.com/55880201)
 
+## Building
+
+To build the library on Windows, clone the repository and navigate to the cloned directory,
+then run the following commands:
+
+```
+mkdir build
+cd build
+cmake ../. -G "Visual Studio 15 2017 Win64"
+```
+
+This will generate a Visual Studio solution you can use to build.
+
+To build the library on OSX or Linux use the following commands:
+
+```
+mkdir build
+cd build
+cmake ../. -G "CodeBlocks - Unix Makefiles"
+make
+```
+
+The build looks for Maya in the default installation directory for each platform, however you can always provide it with a custom path:
+
+```
+-DMAYA_LOCATION=/apps/autodesk/
+```
+
+Likewise, the build defaults to Maya version 2018, this can be changed as follows:
+
+```
+-DMAYA_VERSION=2017
+```
+
 ## Installation
 
 For ease of use all files are combined as a module. This allows for an easy installation and keeps all necessary files in one location.
