@@ -32,7 +32,7 @@ Tutorial on Vimeo: [iSkinDeform](https://vimeo.com/55880201)
 
 For ease of use all files are combined as a module. This allows for an easy installation and keeps all necessary files in one location.
 
-**_Important:_**
+**_Important_**
 
 **_If after the installation the menu items don't show up it's possible that the downloaded files from github have faulty user permissions. In this case try to create the modules folder manually and check the permissions or download the file from [braverabbit](http://www.braverabbit.com/ideform/)._**
 
@@ -52,14 +52,14 @@ Edit the file in a text editor and replace USERNAME in the paths with your user 
 
 Restart Maya and find the iDeform menu in the main menu bar at the top of the interface.
 
-## Usage:
+## Usage
 
 When properly installed the main Maya menu contains a new menu item named iDeform. You can create and edit the deformers in a similar way you would with standard deformers in Maya.
 
 ### Latest version: 2.0.0 (2018-11-10)
 
 
-## Changelog:
+## Changelog
 
 **2.0.0 (2018-11-10)**
 
