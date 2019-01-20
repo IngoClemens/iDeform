@@ -535,7 +535,7 @@ MStatus iCollide::deform(MDataBlock& data,
     // contain the necessary information and the devkit examples don't
     // elaborate on this either.
     MDataHandle groupData = inputGeomHandle.child(groupId);
-    unsigned int groupId = (unsigned)groupData.asLong();
+    unsigned int groupId = (unsigned)groupData.asInt();
     MItGeometry outIter(outputDataHandle, groupId, false);
     // Get a reference to the output mesh for setting the vertex colors.
     MFnMesh outMeshFn(outputDataHandle.asMesh());

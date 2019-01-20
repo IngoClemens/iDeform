@@ -508,7 +508,7 @@ MStatus iDisplace::deform(MDataBlock& data,
     // contain the necessary information and the devkit examples don't
     // elaborate on this either.
     MDataHandle groupData = inputGeomHandle.child(groupId);
-    unsigned int groupId = (unsigned)groupData.asLong();
+    unsigned int groupId = (unsigned)groupData.asInt();
     MItGeometry outIter(outputDataHandle, groupId, false);
 
     // The mesh points in local space. These are the points needed to
@@ -547,7 +547,7 @@ MStatus iDisplace::deform(MDataBlock& data,
         const MString placementMatrixAttr("matrix");
 
         MFnDependencyNode textureFn(textureObj);
-        MPlug placementPlug = textureFn.findPlug(matrixAttr, &status);
+        MPlug placementPlug = textureFn.findPlug(matrixAttr, false, &status);
         if (status)
         {
             MPlugArray connectedPlacement;
@@ -558,7 +558,7 @@ MStatus iDisplace::deform(MDataBlock& data,
                 if (placementObj.hasFn(MFn::kPlace3dTexture))
                 {
                     MFnDependencyNode placementFn(placementObj);
-                    MPlug matrixPlug = placementFn.findPlug(placementMatrixAttr, &status);
+                    MPlug matrixPlug = placementFn.findPlug(placementMatrixAttr, false, &status);
                     if (status)
                     {
                         MObject matrixObj;

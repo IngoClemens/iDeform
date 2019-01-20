@@ -328,7 +328,7 @@ MStatus iSkinDeform::deform(MDataBlock& data,
     // contain the necessary information and the devkit examples don't
     // elaborate on this either.
     MDataHandle groupData = inputGeomHandle.child(groupId);
-    unsigned int groupId = (unsigned)groupData.asLong();
+    unsigned int groupId = (unsigned)groupData.asInt();
     MItGeometry outIter(outputDataHandle, groupId, false);
 
     // The mesh points in local space. These are the points needed to

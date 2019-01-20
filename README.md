@@ -20,6 +20,7 @@ A displacement deformer with the ability to use locators or curves to define the
 Since the 2015 release of Maya and it’s own texture deformer iDisplace has almost become obsolete. However, iDisplace still features dropoff points and curves, which makes it the more versatile choice if better control is needed. Also nested textures are usually problematic when using the texture deformer.
 
 Tutorial on Vimeo: [iDisplace](https://vimeo.com/55511098)
+
 Tutorial on Vimeo: [Vertex color based displacement](https://vimeo.com/157510194)
 
 ### iSkinDeform
@@ -74,7 +75,7 @@ When properly installed the main Maya menu contains a new menu item named iDefor
     - Added icons for the menu and the nodes in the outliner and node editor.
     - Added a new command to the menu (Connect Transform) to connect a transform to the iCollide deformer in case additional translation is needed.
 
-    **_Important attribute changes_**
+    Important attribute changes:
     - iCollide: Removed:
         - Random
         - Seed

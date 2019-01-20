@@ -6,3 +6,6 @@ plug-ins: plug-ins/macOS/2017
 
 + MAYAVERSION:2018 iDeform any /Users/USERNAME/Library/Preferences/Autodesk/maya/modules/iDeform
 plug-ins: plug-ins/macOS/2018
+
++ MAYAVERSION:2019 iDeform any /Users/USERNAME/Library/Preferences/Autodesk/maya/modules/iDeform
+plug-ins: plug-ins/macOS/2019
