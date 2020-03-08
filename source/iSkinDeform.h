@@ -12,7 +12,8 @@
 #define __iDeform__iSkinDeform__
 
 #include <iostream>
-#include <tbb/tbb.h>
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
 
 #include <maya/MArrayDataHandle.h>
 #include <maya/MDataBlock.h>
