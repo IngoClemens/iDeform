@@ -4,7 +4,7 @@
 //  iDeform
 //
 //  Created by ingo on 4/24/14.
-//  Copyright (c) 2014 Ingo Clemens. All rights reserved.
+//  Copyright (c) 2021 Ingo Clemens. All rights reserved.
 //
 // ---------------------------------------------------------------------
 
@@ -746,7 +746,7 @@ double iSkinDeform::clampVector(MVector delta, MVector normal)
 // ---------------------------------------------------------------------
 // MIT License
 //
-// Copyright (c) 2018 Ingo Clemens, brave rabbit
+// Copyright (c) 2021 Ingo Clemens, brave rabbit
 // iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
 // MIT License
 //

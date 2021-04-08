@@ -22,7 +22,7 @@ utils.executeDeferred(addMenuItem)
 # ----------------------------------------------------------------------
 # MIT License
 #
-# Copyright (c) 2018 Ingo Clemens, brave rabbit
+# Copyright (c) 2021 Ingo Clemens, brave rabbit
 # iDeform, iCollide, iDisplace, iSkinDeform are under the terms of the
 # MIT License
 #
