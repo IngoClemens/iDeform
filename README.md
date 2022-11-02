@@ -1,6 +1,10 @@
 # iDeform
 Deformer suite for Autodesk Maya.
 
+### Info for Maya 2022 and later
+
+Starting with version 2022 Maya’s deformation system is based on component tags by default. At the current state these are not available for third party plugins. Therefore, the iDeformer suite doesn’t work if component tags are enabled. Due to backwards compatibility Maya allows to disable component tags from the preferences: **_Preferences > Settings > Animation > Component Tags_**
+
 ## Videos
 [iCollide tutorial on Vimeo](https://vimeo.com/55876041)
 
