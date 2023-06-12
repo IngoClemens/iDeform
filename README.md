@@ -1,7 +1,11 @@
 # iDeform
 Deformer suite for Autodesk Maya.
 
-### Info for Maya 2022 and later
+# Discontinuation
+**With the introduction of Maya 2024 the iDeform suite will be discontinued.
+In the past it had served it’s purpose to patch some shortcomings of default Maya. With the ever growing popularity and usability of Bifrost the provided effects can be created with custom compounds delivering more flexibility. Therefore, there won’t be any further updates or compilation services for newer Maya versions.**
+
+### Info for Maya 2022/2023
 
 Starting with version 2022 Maya’s deformation system is based on component tags by default. At the current state these are not available for third party plugins. Therefore, the iDeformer suite doesn’t work if component tags are enabled. Due to backwards compatibility Maya allows to disable component tags from the preferences: **_Preferences > Settings > Animation > Component Tags_**
 
